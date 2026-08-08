@@ -45,10 +45,41 @@ function TelaListaProdutos() {
   );
 }
 
+type ProdutoDetalhe = {
+  nome: string;
+  preco: string;
+  descricao: string;
+  imagem: number;
+};
+
+const produtoMock: ProdutoDetalhe = {
+  nome: 'Cadeira Confort Plus',
+  preco: 'R$ 349,90',
+  descricao: 'Cadeira ergonômica estofada, ideal para home office. Estrutura reforçada e altura regulável.',
+  imagem: require('./assets/produto-cadeira.png'),
+};
+
+// DetalheProduto só lê o que recebe via prop — não altera o produto (Aula 03: props somente-leitura)
+function DetalheProduto({ produto }: { produto: ProdutoDetalhe }) {
+  return (
+    <View style={styles.detalheContainer}>
+      <Image source={produto.imagem} style={styles.detalheImagem} />
+      <Text style={styles.detalheNome}>{produto.nome}</Text>
+      <Text style={styles.detalhePreco}>{produto.preco}</Text>
+      <Text style={styles.detalheDescricao}>{produto.descricao}</Text>
+    </View>
+  );
+}
+
+function TelaDetalheProduto() {
+  return <DetalheProduto produto={produtoMock} />;
+}
+
+// A Aula 05 liga TelaListaProdutos -> TelaDetalheProduto por navegação; até lá, App roda a tela de detalhe direto.
 export default function App() {
   return (
     <>
-      <TelaListaProdutos />
+      <TelaDetalheProduto />
       <StatusBar style="auto" />
     </>
   );
@@ -87,5 +118,33 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#2E7D32',
     marginTop: 4,
+  },
+  detalheContainer: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+  },
+  detalheImagem: {
+    width: '100%',
+    height: 220,
+    borderRadius: 8,
+    marginBottom: 16,
+  },
+  detalheNome: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1B3A5C',
+  },
+  detalhePreco: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#2E7D32',
+    marginTop: 4,
+  },
+  detalheDescricao: {
+    fontSize: 15,
+    color: '#4A4A4A',
+    marginTop: 12,
+    lineHeight: 22,
   },
 });
