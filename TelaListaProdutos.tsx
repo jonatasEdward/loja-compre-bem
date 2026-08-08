@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { FlatList, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from './App';
 
@@ -36,26 +36,25 @@ export const produtosMock: Produto[] = [
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ListaProdutos'>;
 
-// A lista ainda usa .map() aqui, igual desde a Aula 03 — FlatList só entra na Aula 07.
 function TelaListaProdutos({ navigation }: Props) {
   return (
-    <View style={styles.container}>
-      {produtosMock.map((item) => (
+    <FlatList
+      data={produtosMock}
+      keyExtractor={(item) => String(item.id)}
+      renderItem={({ item }) => (
         <TouchableOpacity
-          key={item.id}
           style={styles.item}
           onPress={() => navigation.navigate('DetalheProduto', { produtoId: item.id })}
         >
           <Text style={styles.nome}>{item.nome}</Text>
           <Text style={styles.preco}>{item.preco}</Text>
         </TouchableOpacity>
-      ))}
-    </View>
+      )}
+    />
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16 },
   item: { padding: 16, borderBottomWidth: 1, borderBottomColor: '#EEE' },
   nome: { fontSize: 16, fontWeight: '600' },
   preco: { fontSize: 14, color: '#2E7D32' },
