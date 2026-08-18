@@ -1,4 +1,17 @@
-import { FlatList, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import {
+  BackHandler,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  Text,
+  TextInput,
+  ToastAndroid,
+  TouchableOpacity,
+  StyleSheet,
+  useWindowDimensions,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from './App';
 
@@ -37,25 +50,85 @@ export const produtosMock: Produto[] = [
 type Props = NativeStackScreenProps<RootStackParamList, 'ListaProdutos'>;
 
 function TelaListaProdutos({ navigation }: Props) {
+  // Categoria 1 (área/dimensão) — a loja vira 2 colunas sozinha num aparelho
+  // largo (tablet, ou celular grande deitado); no celular comum, 1 coluna.
+  // useWindowDimensions() atualiza esse valor automaticamente se o aparelho girar.
+  const { width } = useWindowDimensions();
+  const numColunas = width >= 600 ? 2 : 1;
+
+  // Categoria 3 (teclado cobrindo campo) — busca por nome do produto.
+  const [busca, setBusca] = useState('');
+  const produtosFiltrados = useMemo(
+    () => produtosMock.filter((item) => item.nome.toLowerCase().includes(busca.toLowerCase())),
+    [busca]
+  );
+
+  // Categoria 4 (navegação por plataforma) — no Android, um único toque no
+  // botão/gesto de voltar nesta tela (a raiz da pilha) fecharia o app direto;
+  // "toque de novo para sair" evita saída acidental. No iOS o gesto nativo de
+  // voltar não passa por aqui e não pode ser bloqueado — por isso este
+  // BackHandler só faz sentido, e só dispara, no Android.
+  const tocouVoltarUmaVez = useRef(false);
+  useEffect(() => {
+    if (Platform.OS !== 'android') return;
+    const assinatura = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (tocouVoltarUmaVez.current) {
+        return false; // segundo toque: deixa o Android fechar o app normalmente
+      }
+      tocouVoltarUmaVez.current = true;
+      ToastAndroid.show('Toque voltar de novo para sair', ToastAndroid.SHORT);
+      setTimeout(() => {
+        tocouVoltarUmaVez.current = false;
+      }, 2000);
+      return true; // primeiro toque: bloqueia a saída imediata
+    });
+    return () => assinatura.remove();
+  }, []);
+
   return (
-    <FlatList
-      data={produtosMock}
-      keyExtractor={(item) => String(item.id)}
-      renderItem={({ item }) => (
-        <TouchableOpacity
-          style={styles.item}
-          onPress={() => navigation.navigate('DetalheProduto', { produtoId: item.id })}
-        >
-          <Text style={styles.nome}>{item.nome}</Text>
-          <Text style={styles.preco}>{item.preco}</Text>
-        </TouchableOpacity>
-      )}
-    />
+    <SafeAreaView style={styles.area} edges={['top', 'left', 'right']}>
+      <KeyboardAvoidingView
+        style={styles.area}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <TextInput
+          placeholder="Buscar produto..."
+          value={busca}
+          onChangeText={setBusca}
+          style={styles.busca}
+        />
+        <FlatList
+          key={numColunas}
+          data={produtosFiltrados}
+          numColumns={numColunas}
+          columnWrapperStyle={numColunas > 1 ? styles.linha : undefined}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              style={styles.item}
+              onPress={() => navigation.navigate('DetalheProduto', { produtoId: item.id })}
+            >
+              <Text style={styles.nome}>{item.nome}</Text>
+              <Text style={styles.preco}>{item.preco}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  item: { padding: 16, borderBottomWidth: 1, borderBottomColor: '#EEE' },
+  area: { flex: 1 },
+  busca: {
+    margin: 16,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#DDD',
+    borderRadius: 8,
+  },
+  linha: { justifyContent: 'space-between', paddingHorizontal: 16 },
+  item: { flex: 1, padding: 16, borderBottomWidth: 1, borderBottomColor: '#EEE' },
   nome: { fontSize: 16, fontWeight: '600' },
   preco: { fontSize: 14, color: '#2E7D32' },
 });

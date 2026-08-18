@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from './App';
 import { produtosMock, type Produto } from './TelaListaProdutos';
@@ -18,9 +18,23 @@ function DetalheProduto({ produto }: { produto: Produto }) {
 
 type Props = NativeStackScreenProps<RootStackParamList, 'DetalheProduto'>;
 
-function TelaDetalheProduto({ route }: Props) {
-  const { produtoId } = route.params;
-  const produto = produtosMock.find((item) => item.id === produtoId)!;
+// Categoria 4 (navegação segura) — acesso opcional a route.params: se a tela
+// for aberta sem produtoId (ex.: link direto, ou navegação disparada sem
+// parâmetro por engano), a tela mostra um estado tratável em vez de quebrar.
+function TelaDetalheProduto({ route, navigation }: Props) {
+  const produtoId = route.params?.produtoId;
+  const produto = produtosMock.find((item) => item.id === produtoId);
+
+  if (!produto) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.nome}>Produto não encontrado.</Text>
+        <TouchableOpacity style={styles.voltar} onPress={() => navigation.goBack()}>
+          <Text style={styles.voltarTexto}>Voltar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return <DetalheProduto produto={produto} />;
 }
@@ -56,4 +70,6 @@ const styles = StyleSheet.create({
     marginTop: 12,
     lineHeight: 22,
   },
+  voltar: { marginTop: 20, paddingVertical: 12, paddingHorizontal: 16, alignSelf: 'flex-start' },
+  voltarTexto: { color: '#1B3A5C', fontWeight: 'bold' },
 });
