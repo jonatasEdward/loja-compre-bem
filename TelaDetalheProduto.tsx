@@ -49,9 +49,14 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#FFFFFF',
   },
+  // Aula 13: largura relativa (100%) já existia desde a Aula 04, mas a
+  // altura era fixa em pixels (220), então num tablet bem mais largo que um
+  // celular a imagem esticava sem crescer na mesma proporção. aspectRatio
+  // mantém a proporção largura/altura e deixa a largura relativa decidir o
+  // tamanho real (reactnative.dev/docs/flexbox).
   imagem: {
     width: '100%',
-    height: 220,
+    aspectRatio: 4 / 3,
     borderRadius: 8,
     marginBottom: 16,
   },

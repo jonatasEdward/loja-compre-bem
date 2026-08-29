@@ -201,10 +201,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   erro: { color: '#C62828' },
+  // Aula 13: com padding:12 e o texto de 14-16px, esse botão media perto de
+  // 40px de altura, abaixo do minimo de 44x44 pixels CSS do criterio de
+  // sucesso 2.5.5 (Target Size) da WCAG 2.1 (w3.org/WAI/WCAG21/Understanding/target-size.html).
+  // minHeight:44 fecha essa lacuna sem depender do tamanho exato da fonte.
   botaoCadastrar: {
     backgroundColor: '#1B3A5C',
     borderRadius: 8,
     padding: 12,
+    minHeight: 44,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   botaoCadastrarTexto: { color: '#FFFFFF', fontWeight: '600' },
