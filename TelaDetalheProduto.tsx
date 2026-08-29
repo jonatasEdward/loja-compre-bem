@@ -3,7 +3,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from './App';
 import type { Produto } from './TelaListaProdutos';
 
-// DetalheProduto é o mesmo componente construído na Aula 04 — só lê o que
+// DetalheProduto é o mesmo componente construído na Aula 04, só lê o que
 // recebe via prop, nunca altera (props somente-leitura, Aula 03).
 function DetalheProduto({ produto }: { produto: Produto }) {
   return (
@@ -20,7 +20,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'DetalheProduto'> & {
   produtos: Produto[];
 };
 
-// Categoria 4 (navegação segura) — acesso opcional a route.params: se a tela
+// Categoria 4 (navegação segura), acesso opcional a route.params: se a tela
 // for aberta sem produtoId (ex.: link direto, ou navegação disparada sem
 // parâmetro por engano), a tela mostra um estado tratável em vez de quebrar.
 function TelaDetalheProduto({ route, navigation, produtos }: Props) {

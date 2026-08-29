@@ -12,9 +12,9 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// Aula 11 — o catálogo deixa de ser um array fixo (produtosMock) e vira
+// Aula 11, o catálogo deixa de ser um array fixo (produtosMock) e vira
 // estado. Ele mora aqui, em App.tsx, porque é o ancestral comum entre
-// TelaListaProdutos (cadastra) e TelaDetalheProduto (só lê) — "lifting state
+// TelaListaProdutos (cadastra) e TelaDetalheProduto (só lê), "lifting state
 // up" (react.dev/learn/sharing-state-between-components): "remove state from
 // both of them, move it to their closest common parent, and then pass it
 // down to them via props." Sem isso, um produto cadastrado na lista nunca

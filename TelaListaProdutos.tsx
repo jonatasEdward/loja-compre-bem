@@ -55,20 +55,20 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ListaProdutos'> & {
 };
 
 function TelaListaProdutos({ navigation, produtos, onAdicionarProduto }: Props) {
-  // Categoria 1 (área/dimensão) — a loja vira 2 colunas sozinha num aparelho
+  // Categoria 1 (área/dimensão), a loja vira 2 colunas sozinha num aparelho
   // largo (tablet, ou celular grande deitado); no celular comum, 1 coluna.
   // useWindowDimensions() atualiza esse valor automaticamente se o aparelho girar.
   const { width } = useWindowDimensions();
   const numColunas = width >= 600 ? 2 : 1;
 
-  // Categoria 3 (teclado cobrindo campo) — busca por nome do produto.
+  // Categoria 3 (teclado cobrindo campo), busca por nome do produto.
   const [busca, setBusca] = useState('');
   const produtosFiltrados = useMemo(
     () => produtos.filter((item) => item.nome.toLowerCase().includes(busca.toLowerCase())),
     [produtos, busca]
   );
 
-  // Aula 11 — cadastro de produto: dois campos controlados (nome, preço) e
+  // Aula 11, cadastro de produto: dois campos controlados (nome, preço) e
   // uma validação que roda só ao tocar em "Cadastrar" (ou ao confirmar o
   // último campo pelo teclado), nunca a cada tecla digitada.
   const [nome, setNome] = useState('');
@@ -76,10 +76,10 @@ function TelaListaProdutos({ navigation, produtos, onAdicionarProduto }: Props) 
   const [erro, setErro] = useState('');
   const inputPrecoRef = useRef<TextInput>(null);
 
-  // Categoria 4 (navegação por plataforma) — Aula 08: um único toque no
+  // Categoria 4 (navegação por plataforma), Aula 08: um único toque no
   // botão/gesto de voltar nesta tela (a raiz da pilha) fecharia o app direto;
   // "toque de novo para sair" evita saída acidental. No iOS o gesto nativo de
-  // voltar não passa por aqui e não pode ser bloqueado — por isso este
+  // voltar não passa por aqui e não pode ser bloqueado, por isso este
   // BackHandler só faz sentido, e só dispara, no Android.
   const tocouVoltarUmaVez = useRef(false);
   useEffect(() => {
@@ -103,12 +103,12 @@ function TelaListaProdutos({ navigation, produtos, onAdicionarProduto }: Props) 
       setErro('O nome não pode ficar vazio.');
       return;
     }
-    // TextInput.keyboardType="decimal-pad" é o valor certo para preço — a
+    // TextInput.keyboardType="decimal-pad" é o valor certo para preço, a
     // documentação oficial não distingue "numeric" de "decimal-pad" por
     // acaso: "numeric"/"number-pad" só entregam dígitos inteiros, e é
     // "decimal-pad" quem inclui o separador decimal do idioma do aparelho
     // (reactnative.dev/docs/textinput). No Brasil isso normalmente é vírgula,
-    // não ponto — por isso o preço digitado é normalizado antes de virar
+    // não ponto, por isso o preço digitado é normalizado antes de virar
     // número, sem depender de o usuário saber que o JavaScript só entende
     // ponto.
     const precoNormalizado = preco.trim().replace(',', '.');
@@ -118,7 +118,7 @@ function TelaListaProdutos({ navigation, produtos, onAdicionarProduto }: Props) 
       return;
     }
 
-    // Placeholder: cadastro por texto não inclui upload de imagem — usamos
+    // Placeholder: cadastro por texto não inclui upload de imagem, usamos
     // um ícone genérico já existente nos assets da loja.
     onAdicionarProduto({
       id: Date.now(),
