@@ -1,13 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   BackHandler,
-  FlatList,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Text,
   TextInput,
   ToastAndroid,
   TouchableOpacity,
+  View,
+  FlatList,
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
@@ -23,7 +25,7 @@ export type Produto = {
   imagem: number;
 };
 
-export const produtosMock: Produto[] = [
+export const produtosIniciais: Produto[] = [
   {
     id: 1,
     nome: 'Cadeira Confort Plus',
@@ -47,9 +49,12 @@ export const produtosMock: Produto[] = [
   },
 ];
 
-type Props = NativeStackScreenProps<RootStackParamList, 'ListaProdutos'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'ListaProdutos'> & {
+  produtos: Produto[];
+  onAdicionarProduto: (produto: Produto) => void;
+};
 
-function TelaListaProdutos({ navigation }: Props) {
+function TelaListaProdutos({ navigation, produtos, onAdicionarProduto }: Props) {
   // Categoria 1 (área/dimensão) — a loja vira 2 colunas sozinha num aparelho
   // largo (tablet, ou celular grande deitado); no celular comum, 1 coluna.
   // useWindowDimensions() atualiza esse valor automaticamente se o aparelho girar.
@@ -59,11 +64,19 @@ function TelaListaProdutos({ navigation }: Props) {
   // Categoria 3 (teclado cobrindo campo) — busca por nome do produto.
   const [busca, setBusca] = useState('');
   const produtosFiltrados = useMemo(
-    () => produtosMock.filter((item) => item.nome.toLowerCase().includes(busca.toLowerCase())),
-    [busca]
+    () => produtos.filter((item) => item.nome.toLowerCase().includes(busca.toLowerCase())),
+    [produtos, busca]
   );
 
-  // Categoria 4 (navegação por plataforma) — no Android, um único toque no
+  // Aula 11 — cadastro de produto: dois campos controlados (nome, preço) e
+  // uma validação que roda só ao tocar em "Cadastrar" (ou ao confirmar o
+  // último campo pelo teclado), nunca a cada tecla digitada.
+  const [nome, setNome] = useState('');
+  const [preco, setPreco] = useState('');
+  const [erro, setErro] = useState('');
+  const inputPrecoRef = useRef<TextInput>(null);
+
+  // Categoria 4 (navegação por plataforma) — Aula 08: um único toque no
   // botão/gesto de voltar nesta tela (a raiz da pilha) fecharia o app direto;
   // "toque de novo para sair" evita saída acidental. No iOS o gesto nativo de
   // voltar não passa por aqui e não pode ser bloqueado — por isso este
@@ -85,12 +98,72 @@ function TelaListaProdutos({ navigation }: Props) {
     return () => assinatura.remove();
   }, []);
 
+  function validarESalvar() {
+    if (nome.trim() === '') {
+      setErro('O nome não pode ficar vazio.');
+      return;
+    }
+    // TextInput.keyboardType="decimal-pad" é o valor certo para preço — a
+    // documentação oficial não distingue "numeric" de "decimal-pad" por
+    // acaso: "numeric"/"number-pad" só entregam dígitos inteiros, e é
+    // "decimal-pad" quem inclui o separador decimal do idioma do aparelho
+    // (reactnative.dev/docs/textinput). No Brasil isso normalmente é vírgula,
+    // não ponto — por isso o preço digitado é normalizado antes de virar
+    // número, sem depender de o usuário saber que o JavaScript só entende
+    // ponto.
+    const precoNormalizado = preco.trim().replace(',', '.');
+    const precoNumerico = Number(precoNormalizado);
+    if (preco.trim() === '' || isNaN(precoNumerico) || precoNumerico <= 0) {
+      setErro('O preço precisa ser um número maior que zero (ex.: 89,90).');
+      return;
+    }
+
+    // Placeholder: cadastro por texto não inclui upload de imagem — usamos
+    // um ícone genérico já existente nos assets da loja.
+    onAdicionarProduto({
+      id: Date.now(),
+      nome,
+      preco: `R$ ${precoNumerico.toFixed(2).replace('.', ',')}`,
+      descricao: 'Produto cadastrado pela equipe da loja.',
+      imagem: require('./assets/produto-suporte.png'),
+    });
+    setNome('');
+    setPreco('');
+    setErro('');
+    Keyboard.dismiss();
+  }
+
   return (
     <SafeAreaView style={styles.area} edges={['top', 'left', 'right']}>
       <KeyboardAvoidingView
         style={styles.area}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
+        <View style={styles.cadastro}>
+          <TextInput
+            placeholder="Nome do novo produto"
+            value={nome}
+            onChangeText={setNome}
+            style={styles.input}
+            returnKeyType="next"
+            onSubmitEditing={() => inputPrecoRef.current?.focus()}
+          />
+          <TextInput
+            ref={inputPrecoRef}
+            placeholder="Preço (ex.: 89,90)"
+            value={preco}
+            onChangeText={setPreco}
+            style={styles.input}
+            keyboardType="decimal-pad"
+            returnKeyType="done"
+            onSubmitEditing={validarESalvar}
+          />
+          {erro !== '' && <Text style={styles.erro}>{erro}</Text>}
+          <TouchableOpacity style={styles.botaoCadastrar} onPress={validarESalvar}>
+            <Text style={styles.botaoCadastrarTexto}>Cadastrar produto</Text>
+          </TouchableOpacity>
+        </View>
+
         <TextInput
           placeholder="Buscar produto..."
           value={busca}
@@ -120,6 +193,21 @@ function TelaListaProdutos({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   area: { flex: 1 },
+  cadastro: { margin: 16, marginBottom: 0, gap: 8 },
+  input: {
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#DDD',
+    borderRadius: 8,
+  },
+  erro: { color: '#C62828' },
+  botaoCadastrar: {
+    backgroundColor: '#1B3A5C',
+    borderRadius: 8,
+    padding: 12,
+    alignItems: 'center',
+  },
+  botaoCadastrarTexto: { color: '#FFFFFF', fontWeight: '600' },
   busca: {
     margin: 16,
     padding: 12,

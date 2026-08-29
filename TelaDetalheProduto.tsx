@@ -1,7 +1,7 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from './App';
-import { produtosMock, type Produto } from './TelaListaProdutos';
+import type { Produto } from './TelaListaProdutos';
 
 // DetalheProduto é o mesmo componente construído na Aula 04 — só lê o que
 // recebe via prop, nunca altera (props somente-leitura, Aula 03).
@@ -16,14 +16,16 @@ function DetalheProduto({ produto }: { produto: Produto }) {
   );
 }
 
-type Props = NativeStackScreenProps<RootStackParamList, 'DetalheProduto'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'DetalheProduto'> & {
+  produtos: Produto[];
+};
 
 // Categoria 4 (navegação segura) — acesso opcional a route.params: se a tela
 // for aberta sem produtoId (ex.: link direto, ou navegação disparada sem
 // parâmetro por engano), a tela mostra um estado tratável em vez de quebrar.
-function TelaDetalheProduto({ route, navigation }: Props) {
+function TelaDetalheProduto({ route, navigation, produtos }: Props) {
   const produtoId = route.params?.produtoId;
-  const produto = produtosMock.find((item) => item.id === produtoId);
+  const produto = produtos.find((item) => item.id === produtoId);
 
   if (!produto) {
     return (
