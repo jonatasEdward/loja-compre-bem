@@ -192,33 +192,58 @@ function TelaListaProdutos({ navigation, produtos, onAdicionarProduto }: Props) 
 }
 
 const styles = StyleSheet.create({
-  area: { flex: 1 },
-  cadastro: { margin: 16, marginBottom: 0, gap: 8 },
+  area: {
+    flex: 1, // ocupa toda a altura/largura disponível da tela
+  },
+  cadastro: {
+    margin: 16, // afasta o bloco de cadastro das 4 bordas da tela
+    marginBottom: 0, // ...menos embaixo, para colar no campo de busca
+    gap: 8, // espaço vertical entre os campos e o botão dentro do bloco
+  },
   input: {
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#DDD',
-    borderRadius: 8,
+    padding: 12, // espaço interno entre o texto digitado e a borda do campo
+    borderWidth: 1, // espessura da linha de contorno do campo
+    borderColor: '#DDD', // cor cinza-claro do contorno
+    borderRadius: 8, // arredonda os cantos do campo
   },
-  erro: { color: '#C62828' },
+  erro: {
+    color: '#C62828', // vermelho para o texto da mensagem de erro
+  },
   botaoCadastrar: {
-    backgroundColor: '#1B3A5C',
-    borderRadius: 8,
-    padding: 12,
-    alignItems: 'center',
+    backgroundColor: '#1B3A5C', // azul-escuro de fundo do botão
+    borderRadius: 8, // arredonda os cantos do botão
+    padding: 12, // espaço interno entre o texto e as bordas do botão
+    alignItems: 'center', // centraliza o texto na horizontal
   },
-  botaoCadastrarTexto: { color: '#FFFFFF', fontWeight: '600' },
+  botaoCadastrarTexto: {
+    color: '#FFFFFF', // texto branco para contrastar com o fundo azul
+    fontWeight: '600', // deixa o texto semi-negrito
+  },
   busca: {
-    margin: 16,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#DDD',
-    borderRadius: 8,
+    margin: 16, // afasta o campo de busca das bordas da tela
+    padding: 12, // espaço interno entre o texto digitado e a borda
+    borderWidth: 1, // espessura da linha de contorno
+    borderColor: '#DDD', // cor cinza-claro do contorno
+    borderRadius: 8, // arredonda os cantos do campo
   },
-  linha: { justifyContent: 'space-between', paddingHorizontal: 16 },
-  item: { flex: 1, padding: 16, borderBottomWidth: 1, borderBottomColor: '#EEE' },
-  nome: { fontSize: 16, fontWeight: '600' },
-  preco: { fontSize: 14, color: '#2E7D32' },
+  linha: {
+    justifyContent: 'space-between', // distribui as 2 colunas com espaço entre elas
+    paddingHorizontal: 16, // recuo nas laterais de cada linha da grade
+  },
+  item: {
+    flex: 1, // cada card divide igualmente o espaço da linha
+    padding: 16, // espaço interno entre o conteúdo e a borda do card
+    borderBottomWidth: 1, // linha divisória embaixo de cada item
+    borderBottomColor: '#EEE', // cor bem clara da linha divisória
+  },
+  nome: {
+    fontSize: 16, // tamanho da fonte do nome do produto
+    fontWeight: '600', // deixa o nome semi-negrito
+  },
+  preco: {
+    fontSize: 14, // tamanho da fonte do preço (menor que o nome)
+    color: '#2E7D32', // verde para destacar o valor
+  },
 });
 
 export default TelaListaProdutos;

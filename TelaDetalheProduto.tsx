@@ -45,33 +45,41 @@ export default TelaDetalheProduto;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#FFFFFF',
+    flex: 1, // ocupa toda a área disponível da tela
+    padding: 20, // espaço interno entre o conteúdo e as bordas da tela
+    backgroundColor: '#FFFFFF', // fundo branco da tela
   },
   imagem: {
-    width: '100%',
-    height: 220,
-    borderRadius: 8,
-    marginBottom: 16,
+    width: '100%', // a imagem ocupa toda a largura do container
+    height: 220, // altura fixa da imagem em pixels
+    borderRadius: 8, // arredonda os cantos da imagem
+    marginBottom: 16, // espaço entre a imagem e o texto abaixo
   },
   nome: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1B3A5C',
+    fontSize: 22, // tamanho da fonte do nome do produto
+    fontWeight: 'bold', // deixa o nome em negrito
+    color: '#1B3A5C', // azul-escuro do título
   },
   preco: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#2E7D32',
-    marginTop: 4,
+    fontSize: 20, // tamanho da fonte do preço
+    fontWeight: '600', // deixa o preço semi-negrito
+    color: '#2E7D32', // verde para destacar o valor
+    marginTop: 4, // pequeno espaço entre o nome e o preço
   },
   descricao: {
-    fontSize: 15,
-    color: '#4A4A4A',
-    marginTop: 12,
-    lineHeight: 22,
+    fontSize: 15, // tamanho da fonte do texto de descrição
+    color: '#4A4A4A', // cinza-escuro para leitura confortável
+    marginTop: 12, // espaço entre o preço e a descrição
+    lineHeight: 22, // altura de cada linha (espaçamento entre linhas)
   },
-  voltar: { marginTop: 20, paddingVertical: 12, paddingHorizontal: 16, alignSelf: 'flex-start' },
-  voltarTexto: { color: '#1B3A5C', fontWeight: 'bold' },
+  voltar: {
+    marginTop: 20, // espaço acima do botão voltar
+    paddingVertical: 12, // espaço interno em cima e embaixo do texto
+    paddingHorizontal: 16, // espaço interno nas laterais do texto
+    alignSelf: 'flex-start', // o botão ocupa só a largura do seu texto, alinhado à esquerda
+  },
+  voltarTexto: {
+    color: '#1B3A5C', // azul-escuro do texto do botão
+    fontWeight: 'bold', // deixa o texto em negrito
+  },
 });
